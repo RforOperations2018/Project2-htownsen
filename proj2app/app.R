@@ -21,6 +21,7 @@ library(tidyr)
 library(rgdal)
 library(leaflet)
 library(shinythemes)
+library(xml2)
 
 # practicing with the geojson file first to see which fields are which
 #hoods <- readOGR("Neighborhoods_.geojson")
