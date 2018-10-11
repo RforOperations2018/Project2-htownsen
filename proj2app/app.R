@@ -123,20 +123,37 @@ server <- function(input, output) {
   })
   
   output$map <- renderLeaflet({
-    icon.water <- makeAwesomeIcon(icon = "tint", markerColor = "blue",
-                                      iconColor = "blue", library = "glyphicon")
     hoodpolys <- pghLoad()
     waters <- watersdf()
+    icon.water <- makeAwesomeIcon(icon = "tint", markerColor = "blue",
+                                  iconColor = "black", library = "glyphicon")
+    
     # Call Data and Build Map
     leaflet(width="100%", height="100%") %>%
       addTiles() %>%
       addPolygons(data = hoodpolys) %>%
       
-      if (!is.null(waters)) {
+      # if ((dim(waters))[1]!=0) {
         addAwesomeMarkers(data = waters, lng = ~longitude, lat = ~latitude, icon = icon.water)
-      }
-      
+      # }
   })
+  
+  # Data Table Output containing information from the input fields
+  output$table <- DT::renderDataTable({
+    df <- pghLoad()
+    #subset(df, select = c(SafetyRating, SurveyDate, ProvingGroundFeel, AVTechFamiliarity, ZipCode))
+  })
+  
+  # Download data in the datatable
+  # Must "Open in Browser" (the app) in order for the download to work as expected
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste("PGH-Neighborhood-", input$hoodSelect, Sys.Date(), ".csv", sep="")
+    },
+    content = function(file) {
+      write.csv(pghLoad(), file)
+    }
+  )
 }
 
 # Run the application
