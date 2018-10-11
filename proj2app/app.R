@@ -1,6 +1,17 @@
 # PROJECT 2
 # HALEY TOWNSEND
 
+# 2: Building a Leaflet App with Inputs and Web API’s
+# Due Date: 10/19/2018
+
+# To bring the entire course together students will create an interactive map that includes:
+# one (1) interactive map, one (1) datatable, and two (2) interactive charts or graphs. 
+# All data should be pulled from a web API’s. The app should have at least two different types 
+# of layers (points/markers, lines, heatmap or polygons) and at least four (4) input commands 
+# and the ability for the user to download the raw data they are viewing.
+# Applications should be deployed and working on shinyapps.io.
+
+
 library(shiny)
 library(httr)
 library(jsonlite)
@@ -13,6 +24,8 @@ library(shinythemes)
 
 # practicing with the geojson file first to see which fields are which
 hoods <- readOGR("Neighborhoods_.geojson")
+
+# looks like the "hood" field has the name of the neighborhoods
 
 
 # # Function to pull ESRI data
