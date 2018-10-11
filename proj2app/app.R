@@ -53,10 +53,7 @@ hoods <- getEsriList(url)
 
 
 # Define UI for application that creates a map
-ui <- fluidPage(theme = shinytheme("flatly"),
-
-                # Application title
-                titlePanel("Pittsburgh Neighborhoods"),
+ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
 
                 # Sidebar with a slider input for number of bins
                 sidebarLayout(
