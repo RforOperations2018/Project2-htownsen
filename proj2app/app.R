@@ -65,7 +65,8 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                     selectInput("hoodSelect",
                                 "Select a Neighborhood:",
                                 choices = hoods,
-                                selected = "Shadyside")
+                                selected = "Shadyside"),
+                    style = "opacity: 0.92"
                           )
                  ),
                  tabPanel("Table",
