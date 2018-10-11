@@ -54,27 +54,33 @@ hoods <- getEsriList(url)
 
 # Define UI for application that creates a map
 ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
+                 tabPanel("Interactive PGH Map",
+                          leafletOutput("map", width="100%", height="100%"),
+                          
+                          # Shiny versions prior to 0.11 should use class = "modal" instead.
+                          absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
+                                        draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
+                                        width = 330, height = "auto",
 
-                # Sidebar with a slider input for number of bins
-                sidebarLayout(
-                  sidebarPanel(
                     selectInput("hoodSelect",
                                 "Select a Neighborhood:",
                                 choices = hoods,
                                 selected = "Shadyside")
-                  ),
-
-                  mainPanel(tabsetPanel(type="tabs",
-                                        tabPanel("Plots", fluidRow(leafletOutput("map"))),
-                                        tabPanel("Table",
-                                                 inputPanel(
-                                                   downloadButton("downloadData", "Download Data Here")
-                                                   ),
-                                                 fluidPage(DT::dataTableOutput("table")))
-                  )
-                  )
-                )
+                          )
+                 )
 )
+
+#                   mainPanel(tabsetPanel(type="tabs",
+#                                         tabPanel("Plots", fluidRow(leafletOutput("map"))),
+#                                         tabPanel("Table",
+#                                                  inputPanel(
+#                                                    downloadButton("downloadData", "Download Data Here")
+#                                                    ),
+#                                                  fluidPage(DT::dataTableOutput("table")))
+#                   )
+#                   )
+#                 )
+# )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
