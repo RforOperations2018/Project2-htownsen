@@ -131,7 +131,11 @@ server <- function(input, output) {
     leaflet(width="100%", height="100%") %>%
       addTiles() %>%
       addPolygons(data = hoodpolys) %>%
-      addAwesomeMarkers(data = waters, lng = ~longitude, lat = ~latitude, icon = icon.water)
+      
+      if (!is.null(waters)) {
+        addAwesomeMarkers(data = waters, lng = ~longitude, lat = ~latitude, icon = icon.water)
+      }
+      
   })
 }
 
