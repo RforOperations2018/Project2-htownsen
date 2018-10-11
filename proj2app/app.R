@@ -23,73 +23,74 @@ library(leaflet)
 library(shinythemes)
 
 # practicing with the geojson file first to see which fields are which
-hoods <- readOGR("Neighborhoods_.geojson")
+#hoods <- readOGR("Neighborhoods_.geojson")
 
 # looks like the "hood" field has the name of the neighborhoods
 
 
-# # Function to pull ESRI data
-# getEsri <- function(url) {
-#   # Make Call
-#   g <- GET(URLencode(url))
-#   c <- content(g)
-#   readOGR(c)
-# }
-# 
-# getEsriList <- function(url) {
-#   # Make Call
-#   g <- GET(URLencode(url))
-#   fromJSON(content(g))$features %>% 
-#     unlist() %>% 
-#     unname()
-# }
-# 
-# url <- URLencode("https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/LMS_Data_Public/MapServer/146/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=city&returnGeometry=false&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=true&resultOffset=&resultRecordCount=&f=json")
-# 
-# cities <- getEsriList(url)
-# 
-# 
-# # Define UI for application that creates a map
-# ui <- fluidPage(theme = shinytheme("flatly"),
-#                 
-#                 # Application title
-#                 titlePanel("LA County Police Stations"),
-#                 
-#                 # Sidebar with a slider input for number of bins 
-#                 sidebarLayout(
-#                   sidebarPanel(
-#                     selectInput("city_select",
-#                                 "Select a City:",
-#                                 choices = cities,
-#                                 selected = "Los Angeles")
-#                   ),
-#                   
-#                   # Show a plot of the generated distribution
-#                   mainPanel(
-#                     leafletOutput("map")
-#                   )
-#                 )
-# )
-# 
-# # Define server logic required to draw a histogram
-# server <- function(input, output) {
-#   ptsLoad <- reactive({
-#     # Build URL Query
-#     url <- URLencode(paste0("https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/LMS_Data_Public/MapServer/146/query?where=city+like+%27", gsub(" ", "+", input$city_select), "%27&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&f=json"))
-#     # Get Data
-#     sp <- getEsri(url) %>%
-#       spTransform("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
-#     
-#     return(sp)
-#   })
-#   output$map <- renderLeaflet({
-#     sp <- ptsLoad()
-#     # Call Data and Build Map
-#     leaflet() %>%
-#       addTiles() %>%
-#       addCircleMarkers(data = sp, popup = ~paste0("<b>", Name, "</b><br>", addrln1, "<br>", hours, "<br>", phones, "<br>", description))
-#   })
-# }
-# 
-# # Run the application 
-# shinyApp(ui = ui, server = server)
+# Function to pull ESRI data
+getEsri <- function(url) {
+  # Make Call
+  g <- GET(URLencode(url))
+  c <- content(g)
+  readOGR(c)
+}
+
+getEsriList <- function(url) {
+  # Make Call
+  g <- GET(URLencode(url))
+  fromJSON(content(g))$features %>%
+    unlist() %>%
+    unname()
+}
+
+# This is the URL that grabs all PGH Neighborhoods from the Geojson ESRI REST API
+# WHERE HOOD IS NOT NULL
+url <- URLencode("https://services1.arcgis.com/YZCmUqbcsUpOKfj7/ArcGIS/rest/services/PGHWebNeighborhoods/FeatureServer/0/query?where=HOOD+IS+NOT+NULL&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=&returnGeometry=true&returnCentroid=false&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnDistinctValues=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=json")
+hoods <- getEsriList(url)
+
+
+# Define UI for application that creates a map
+ui <- fluidPage(theme = shinytheme("flatly"),
+
+                # Application title
+                titlePanel("Pittsburgh Neighborhoods"),
+
+                # Sidebar with a slider input for number of bins
+                sidebarLayout(
+                  sidebarPanel(
+                    selectInput("hoodSelect",
+                                "Select a Neighborhood:",
+                                choices = hoods,
+                                selected = "Shadyside")
+                  ),
+
+                  # Show a plot of the generated distribution
+                  mainPanel(
+                    leafletOutput("map")
+                  )
+                )
+)
+
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+  pghLoad <- reactive({
+    # Build URL Query
+    url <- URLencode(paste0("https://services1.arcgis.com/YZCmUqbcsUpOKfj7/arcgis/rest/services/PGHWebNeighborhoods/FeatureServer/0/query?where=HOOD+%3D+%27",input$hoodSelect ,"%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=&returnGeometry=true&returnCentroid=false&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnDistinctValues=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=json"))
+    # Get Data
+    sp <- getEsri(url) 
+    #%>% spTransform("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+
+    return(sp)
+  })
+  output$map <- renderLeaflet({
+    sp <- pghLoad()
+    # Call Data and Build Map
+    leaflet() %>%
+      addTiles() %>%
+      addCircleMarkers(data = sp) #, popup = ~paste0("<b>", Name, "</b><br>", addrln1, "<br>", hours, "<br>", phones, "<br>", description))
+  })
+}
+
+# Run the application
+shinyApp(ui = ui, server = server)
