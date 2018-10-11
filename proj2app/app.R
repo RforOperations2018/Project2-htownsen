@@ -117,9 +117,13 @@ server <- function(input, output) {
     url2 <- paste0("https://data.wprdc.org/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22513290a6-2bac-4e41-8029-354cbda6a7b7%22%20WHERE%20%22neighborhood%22%20%3D%27",
                    gsub(' ', '%20', input$hoodSelect), "%27"
     )
+    #print(url2)
     watermarks <- ckanSQL(url2)
+    # print(nrow(watermarks))
+    if (nrow(watermarks)>0){
+      return(watermarks)
+    }
     
-    return(watermarks)
   })
   
   output$map <- renderLeaflet({
@@ -131,12 +135,12 @@ server <- function(input, output) {
     # Call Data and Build Map
     leaflet(width="100%", height="100%") %>%
       addTiles() %>%
-      addPolygons(data = hoodpolys) %>%
+      addPolygons(data = hoodpolys, popup = ~paste0("<b>", hood, "</b><br>", acres, " acres")) %>%
       
-      # if ((dim(waters))[1]!=0) {
+      #if (!is.null(waters)) {
         addAwesomeMarkers(data = waters, lng = ~longitude, lat = ~latitude, icon = icon.water,
                           popup = ~paste0("<b>", name, "</b><br>", feature_type))
-      # }
+       #} 
   })
   
   # Data Table Output containing information from the input fields
