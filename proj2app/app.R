@@ -11,7 +11,7 @@
 # and the ability for the user to download the raw data they are viewing.
 # Applications should be deployed and working on shinyapps.io.
 
-
+# Loading in the necessary libraries
 library(shiny)
 library(httr)
 library(jsonlite)
@@ -67,9 +67,14 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                                 selected = "Shadyside")
                   ),
 
-                  # Show a plot of the generated distribution
-                  mainPanel(
-                    leafletOutput("map")
+                  mainPanel(tabsetPanel(type="tabs",
+                                        tabPanel("Plots", fluidRow(leafletOutput("map"))),
+                                        tabPanel("Table",
+                                                 inputPanel(
+                                                   downloadButton("downloadData", "Download Data Here")
+                                                   ),
+                                                 fluidPage(DT::dataTableOutput("table")))
+                  )
                   )
                 )
 )
@@ -85,12 +90,13 @@ server <- function(input, output) {
 
     return(hoodpolys)
   })
+  
   output$map <- renderLeaflet({
     hoodpolys <- pghLoad()
     # Call Data and Build Map
     leaflet() %>%
       addTiles() %>%
-      addPolygons(data = hoodpolys) #, popup = ~paste0("<b>", Name, "</b><br>", addrln1, "<br>", hours, "<br>", phones, "<br>", description))
+      addPolygons(data = hoodpolys)
   })
 }
 
