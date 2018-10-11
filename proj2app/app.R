@@ -142,14 +142,14 @@ server <- function(input, output) {
   # Data Table Output containing information from the input fields
   output$table <- DT::renderDataTable({
     df <- pghLoad()
-    #subset(df, select = c(SafetyRating, SurveyDate, ProvingGroundFeel, AVTechFamiliarity, ZipCode))
+    subset(as.data.frame(df), select = c(hood, acres, area))
   })
   
   # Download data in the datatable
   # Must "Open in Browser" (the app) in order for the download to work as expected
   output$downloadData <- downloadHandler(
     filename = function() {
-      paste("PGH-Neighborhood-", input$hoodSelect, Sys.Date(), ".csv", sep="")
+      paste("PGH-Neighborhood-", input$hoodSelect, "-", Sys.Date(), ".csv", sep="")
     },
     content = function(file) {
       write.csv(pghLoad(), file)
