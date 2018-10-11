@@ -55,7 +55,7 @@ hoods <- getEsriList(url)
 # Define UI for application that creates a map
 ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                  tabPanel("Interactive PGH Map",
-                          leafletOutput("map", width="100%", height="100%"),
+                          leafletOutput("map", height='700px'),
                           
                           # Shiny versions prior to 0.11 should use class = "modal" instead.
                           absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
@@ -67,20 +67,14 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                                 choices = hoods,
                                 selected = "Shadyside")
                           )
-                 )
+                 ),
+                 tabPanel("Table",
+                          inputPanel(
+                            downloadButton("downloadData", "Download Data Here")
+                            ),
+                          fluidPage(DT::dataTableOutput("table")))
 )
 
-#                   mainPanel(tabsetPanel(type="tabs",
-#                                         tabPanel("Plots", fluidRow(leafletOutput("map"))),
-#                                         tabPanel("Table",
-#                                                  inputPanel(
-#                                                    downloadButton("downloadData", "Download Data Here")
-#                                                    ),
-#                                                  fluidPage(DT::dataTableOutput("table")))
-#                   )
-#                   )
-#                 )
-# )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -97,7 +91,7 @@ server <- function(input, output) {
   output$map <- renderLeaflet({
     hoodpolys <- pghLoad()
     # Call Data and Build Map
-    leaflet() %>%
+    leaflet(width="100%", height="100%") %>%
       addTiles() %>%
       addPolygons(data = hoodpolys)
   })
