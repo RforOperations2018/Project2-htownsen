@@ -134,7 +134,8 @@ server <- function(input, output) {
       addPolygons(data = hoodpolys) %>%
       
       # if ((dim(waters))[1]!=0) {
-        addAwesomeMarkers(data = waters, lng = ~longitude, lat = ~latitude, icon = icon.water)
+        addAwesomeMarkers(data = waters, lng = ~longitude, lat = ~latitude, icon = icon.water,
+                          popup = ~paste0("<b>", name, "</b><br>", feature_type))
       # }
   })
   
