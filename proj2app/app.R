@@ -123,13 +123,15 @@ server <- function(input, output) {
   })
   
   output$map <- renderLeaflet({
+    icon.water <- makeAwesomeIcon(icon = "tint", markerColor = "blue",
+                                      iconColor = "blue", library = "glyphicon")
     hoodpolys <- pghLoad()
     waters <- watersdf()
     # Call Data and Build Map
     leaflet(width="100%", height="100%") %>%
       addTiles() %>%
       addPolygons(data = hoodpolys) %>%
-      addCircleMarkers(data = waters, lng = ~longitude, lat = ~latitude, radius = 1.5, color = ~feature_type)
+      addAwesomeMarkers(data = waters, lng = ~longitude, lat = ~latitude, icon = icon.water)
   })
 }
 
