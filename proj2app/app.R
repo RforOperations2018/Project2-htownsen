@@ -110,12 +110,26 @@ server <- function(input, output) {
     return(hoodpolys)
   })
   
+  watersdf <- reactive({
+    # Build API Query with proper encodes
+    # Also filter by the three inputs 
+    # Using gsub to deal with spaces for certain factor levels like "Not familiar at all"
+    url2 <- paste0("https://data.wprdc.org/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22513290a6-2bac-4e41-8029-354cbda6a7b7%22%20WHERE%20%22neighborhood%22%20%3D%27",
+                   gsub(' ', '%20', input$hoodSelect), "%27%29"
+    )
+    watermarks <- ckanSQL(url2)
+    
+    return(watermarks)
+  })
+  
   output$map <- renderLeaflet({
     hoodpolys <- pghLoad()
+    waters <- watersdf()
     # Call Data and Build Map
     leaflet(width="100%", height="100%") %>%
       addTiles() %>%
-      addPolygons(data = hoodpolys)
+      addPolygons(data = hoodpolys) %>%
+      addCircleMarkers(data = waters)
   })
 }
 
