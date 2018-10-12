@@ -112,19 +112,26 @@ server <- function(input, output) {
   
   watersdf <- reactive({
     # Build API Query with proper encodes
-    # Also filter by the three inputs 
+    # Also filter by the inputs 
     # Using gsub to deal with spaces for certain factor levels like "Not familiar at all"
     url2 <- paste0("https://data.wprdc.org/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22513290a6-2bac-4e41-8029-354cbda6a7b7%22%20WHERE%20%22neighborhood%22%20%3D%27",
                    gsub(' ', '%20', input$hoodSelect), "%27"
     )
-    #print(url2)
     watermarks <- ckanSQL(url2)
-    # print(nrow(watermarks))
-    # if (nrow(watermarks)>0){
       return(watermarks)
-    # }
-    
   })
+  
+  transpodf <- reactive({
+    # Build API Query with proper encodes
+    # Also filter by the three inputs 
+    # Using gsub to deal with spaces for certain factor levels like "Not familiar at all"
+    url3 <- paste0("https://data.wprdc.org/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%225d61b60b-bd25-4c33-8420-e31a9135ec6e%22%20WHERE%20%22Neighborhood%22%20%3D%27",
+                   gsub(' ', '%20', input$hoodSelect), "%27"
+    )
+    transpo <- ckanSQL(url3)
+    return(transpo)
+  })
+  
   
   output$map <- renderLeaflet({
     hoodpolys <- pghLoad()
@@ -148,8 +155,8 @@ server <- function(input, output) {
   
   # Data Table Output containing information from the input fields
   output$table <- DT::renderDataTable({
-    df <- pghLoad()
-    subset(as.data.frame(df), select = c(hood, acres, area))
+    df <- transpodf()
+    subset(df, select = c(Neighborhood))
   })
   
   # Download data in the datatable
@@ -159,7 +166,7 @@ server <- function(input, output) {
       paste("PGH-Neighborhood-", input$hoodSelect, "-", Sys.Date(), ".csv", sep="")
     },
     content = function(file) {
-      write.csv(pghLoad(), file)
+      write.csv(transpodf(), file)
     }
   )
 }
