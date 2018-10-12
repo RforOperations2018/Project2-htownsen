@@ -156,7 +156,7 @@ server <- function(input, output) {
   # Data Table Output containing information from the input fields
   output$table <- DT::renderDataTable({
     df <- transpodf()
-    subset(df, select = c(Neighborhood))
+    subset(df, select = c(Neighborhood, Total.Street.Miles))
   })
   
   # Download data in the datatable
