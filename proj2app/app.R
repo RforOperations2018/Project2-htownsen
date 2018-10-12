@@ -120,9 +120,9 @@ server <- function(input, output) {
     #print(url2)
     watermarks <- ckanSQL(url2)
     # print(nrow(watermarks))
-    if (nrow(watermarks)>0){
+    # if (nrow(watermarks)>0){
       return(watermarks)
-    }
+    # }
     
   })
   
@@ -133,14 +133,17 @@ server <- function(input, output) {
                                   iconColor = "black", library = "glyphicon")
     
     # Call Data and Build Map
-    leaflet(width="100%", height="100%") %>%
-      addTiles() %>%
-      addPolygons(data = hoodpolys, popup = ~paste0("<b>", hood, "</b><br>", acres, " acres")) %>%
-      
-      #if (!is.null(waters)) {
+    if (nrow(waters)>0){
+      leaflet(width="100%", height="100%") %>%
+        addTiles() %>%
+        addPolygons(data = hoodpolys, popup = ~paste0("<b>", hood, "</b><br>", acres, " acres")) %>%
         addAwesomeMarkers(data = waters, lng = ~longitude, lat = ~latitude, icon = icon.water,
                           popup = ~paste0("<b>", name, "</b><br>", feature_type))
-       #} 
+    } else {
+      leaflet(width="100%", height="100%") %>%
+        addTiles() %>%
+        addPolygons(data = hoodpolys, popup = ~paste0("<b>", hood, "</b><br>", acres, " acres"))
+    }
   })
   
   # Data Table Output containing information from the input fields
