@@ -250,10 +250,12 @@ server <- function(input, output) {
     milesh <- as.numeric(hood$Total.Street.Miles)
     
     ggplotly(
-      ggplot(data = dat, aes(x = as.numeric(Total.Street.Miles))) +
-        geom_histogram(binwidth=5, fill = "orange", color = 'white') + ggtitle(paste0("Road/Street Miles in ", input$hoodSelect)) +
-      xlab("Distribution of Total Street Miles") +
-        gghighlight(miles == milesh))
+      ggplot(data = dat, aes(x = as.numeric(Total.Street.Miles), text = paste("Neighborhoods:", Neighborhood))) +
+        geom_histogram(binwidth=5, fill = "orange", color = 'white') + ggtitle(paste0("Road/Street Miles in Pittsburgh Neighborhoods")) +
+      xlab("Distribution of Total Street Miles") + 
+        ylab("Number of Neighborhoods (out of 90)") +
+        gghighlight(Neighborhood == input$hoodSelect)
+      )
   })
   
   
