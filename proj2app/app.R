@@ -121,9 +121,14 @@ server <- function(input, output) {
   watersdf <- reactive({
     # Build API Query with proper encodes
     # Also filter by the inputs 
-    # Using gsub to deal with spaces for certain factor levels like "Not familiar at all"
+    # Building an IN selector
+    water_filter <- ifelse(length(input$waterSelect) > 0, 
+                           paste0("%20AND%20%22feature_type%22%20IN%20(%27", paste(input$waterSelect, collapse = "%27,%27"),"%27)"),
+                           "")
+    
+    # Using gsub to deal with spaces for certain factor levels with spaces in them
     url2 <- paste0("https://data.wprdc.org/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22513290a6-2bac-4e41-8029-354cbda6a7b7%22%20WHERE%20%22neighborhood%22%20%3D%27",
-                   gsub(' ', '%20', input$hoodSelect),"%27%2C%20%27", gsub(' ', '%20', input$waterSelect) ,"%27"
+                   gsub(' ', '%20', input$hoodSelect),"%27", gsub(' ', '%20', water_filter)
     )
     watermarks <- ckanSQL(url2)
       return(watermarks)
