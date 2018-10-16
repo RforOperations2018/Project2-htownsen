@@ -25,6 +25,7 @@ library(rgdal)
 library(leaflet)
 library(shinythemes)
 library(xml2)
+library(gghighlight)
 
 # practicing with the geojson file first to see which fields are which
 #hoods <- readOGR("Neighborhoods_.geojson")
@@ -248,7 +249,8 @@ server <- function(input, output) {
       ggplot(data = dat, aes(x = as.numeric(Total.Street.Miles))) +
         geom_histogram(binwidth=5, fill = "orange", color = 'white') + ggtitle(paste0("Road/Street Miles in ", input$hoodSelect)) +
       xlab("Distribution of Total Street Miles"))
-        # guides(color = FALSE) + xlab("Familiarity") + ylab("Number of Respondents") + coord_flip())
+        #gghighlight(as.numeric(Total.Street.Miles)==(as.numeric((input$hoodSelect)$Total.Street.Miles))))
+        #
   })
   
   
