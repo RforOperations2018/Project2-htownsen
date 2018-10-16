@@ -98,6 +98,12 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                     style = "opacity: 0.92"
                     )
                  ),
+                 tabPanel("Plots",
+                          fluidRow(
+                            column(6, plotlyOutput("plot1")),
+                            column(6, offset = 6, plotlyOuput("plot2"))
+                          )
+                          ),
                  tabPanel("Downloadable Table",
                           inputPanel(
                             downloadButton("downloadData", "Download Data Here")
@@ -168,8 +174,8 @@ server <- function(input, output) {
   
   # Data Table Output containing information from the input fields
   output$table <- DT::renderDataTable({
-    df <- transpodf()
-    subset(df, select = c(Neighborhood, Total.Street.Miles))
+    dft <- transpodf()
+    subset(dft, select = c(Neighborhood, Total.Street.Miles))
   })
   
   # Download data in the datatable
