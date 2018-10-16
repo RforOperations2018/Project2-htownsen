@@ -101,17 +101,18 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                     style = "opacity: 0.92"
                     )
                  ),
+                 tabPanel("Downloadable Table",
+                          inputPanel(
+                            downloadButton("downloadData", "Download Data Here")
+                          ),
+                          fluidPage(DT::dataTableOutput("table"))),
                  tabPanel("Plots",
                           fluidRow(
                             column(6, plotlyOutput("plot1"))
                             #column(6, offset = 6, plotlyOuput("plot2"))
                           )
-                          ),
-                 tabPanel("Downloadable Table",
-                          inputPanel(
-                            downloadButton("downloadData", "Download Data Here")
-                            ),
-                          fluidPage(DT::dataTableOutput("table")))
+                          )
+                 
 )
 
 
