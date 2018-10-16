@@ -102,11 +102,12 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                     )
                  ),
                  tabPanel("Downloadable Table",
+                          checkboxInput("allSelect", "Would you like to see ALL Pittsburgh neighborhoods?", value = FALSE),
                           inputPanel(
                             downloadButton("downloadData", "Download Data Here")
                           ),
                           fluidPage(DT::dataTableOutput("table"))),
-                 tabPanel("Plots",
+                 tabPanel("Transportation Plots",
                           fluidRow(
                             column(6, plotlyOutput("plot1"))
                             #column(6, offset = 6, plotlyOuput("plot2"))
@@ -143,6 +144,24 @@ server <- function(input, output) {
     watermarks <- ckanSQL(url2)
       return(watermarks)
   })
+  
+  watersdfall <- reactive({
+    # Build API Query with proper encodes
+    # Also filter by the inputs 
+    # Building an IN selector
+    water_filter <- ifelse(length(input$waterSelect) > 0, 
+                           paste0("feature_type%22%20IN%20(%27", paste(input$waterSelect, collapse = "%27,%27"),"%27)"),
+                           "")
+    
+    # Using gsub to deal with spaces for certain factor levels with spaces in them
+    # only filter by water feature type, not by neighborhood
+    url2 <- paste0("https://data.wprdc.org/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22513290a6-2bac-4e41-8029-354cbda6a7b7%22%20WHERE%20%22",
+                   gsub(' ', '%20', water_filter)
+    )
+    watermarks <- ckanSQL(url2)
+    return(watermarks)
+  })
+  
   
   transpodf <- reactive({
     # Build API Query with proper encodes
@@ -217,8 +236,15 @@ server <- function(input, output) {
   
   # Data Table Output containing information from the input fields from leaflet map
   output$table <- DT::renderDataTable({
-    dfw <- watersdf()
-    subset(dfw, select = c(neighborhood, name, feature_type, make))
+    if (input$allSelect==F) {
+      dfw <- watersdf()
+      subset(dfw, select = c(neighborhood, name, feature_type, make))
+      
+    } else {
+      dfall <- watersdfall()
+      subset(dfall, select = c(neighborhood, name, feature_type, make))
+    }
+    
   })
   
   # Download data in the datatable
