@@ -99,6 +99,7 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                                    "Select Water Feature Types:",
                                    choices = watertypes,
                                    selected = c("Drinking Fountain", "Decorative", "Spray")),
+                    checkboxInput("bestSelect", tags$b("Check this box if you only want to see the Most Dependable water Features"), value = FALSE, width = '100%'),
                     style = "opacity: 0.92"
                     )
                  ),
@@ -196,7 +197,7 @@ server <- function(input, output) {
         addTiles() %>%
         addPolygons(data = hoodpolys, popup = ~paste0("<b>", hood, "</b><br>", acres, " acres")) %>%
         addAwesomeMarkers(data = waters, lng = ~longitude, lat = ~latitude, icon = icon.water,
-                          popup = ~paste0("<b>", name, "</b><br>", feature_type))
+                          popup = ~paste0("<b>", name, "</b><br>", feature_type, "<br>", make))
     } else {
       leaflet(width="100%", height="100%") %>%
         addTiles() %>%
