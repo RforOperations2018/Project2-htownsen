@@ -111,7 +111,7 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                  tabPanel("Transportation Plots",
                           fluidRow(
                             column(6, plotlyOutput("plot1")),
-                            column(6, offset = 6, plotlyOutput("plot2"))
+                            column(6, plotlyOutput("plot2"))
                           )
                           )
                  
@@ -237,7 +237,7 @@ server <- function(input, output) {
   output$plot2 <- renderPlotly({
     dat <- transpodf()
     ggplotly(
-      ggplot(data = dat, aes(x = Neighborhood, y = Total.Street.Miles)) +
+      ggplot(data = dat, aes(x = Total.Street.Miles)) +
         geom_bar() + ggtitle(paste0("Road/Street Miles in ", input$hoodSelect)))
         # guides(color = FALSE) + xlab("Familiarity") + ylab("Number of Respondents") + coord_flip())
   })
