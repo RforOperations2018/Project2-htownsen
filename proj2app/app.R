@@ -194,17 +194,30 @@ server <- function(input, output) {
                         "Commute.to.Work..Walk..2010.","Work.at.Home..2010.",	"Commute.to.Work..Carpool.Vanpool..2010.",
                         "Commute.to.Work..Taxi..2010.","Commute.to.Work..Bicycle..2010.","Commute.to.Work..Other..2010.")]
     
+    # Make the colnames more appropriate for the plot, could have done this earlier but oh well
+    names(dat2)[1]<-"Drive Alone"
+    names(dat2)[2]<-"Public Transportation"
+    names(dat2)[3]<-"Motorcycle"
+    names(dat2)[4]<-"Walk"
+    names(dat2)[5]<-"Work at Home (Don't Commute)"
+    names(dat2)[6]<-"Carpool"
+    names(dat2)[7]<-"Taxi"
+    names(dat2)[8]<-"Bicycle"
+    names(dat2)[9]<-"Other"
     
-    plot_ly(dat2, labels = colnames(dat2), values = as.numeric(dat2[1,]) , type = 'pie', showlegend = FALSE) %>%
+    plot_ly(dat2, labels = colnames(dat2), values = as.numeric(dat2[1,]) , type = 'pie',
+            textposition = 'inside',
+            textinfo = 'label+percent', insidetextfont = list(color = '#FFFFFF'),
+            hoverinfo = 'label+percent', showlegend = FALSE) %>%
       layout(title = paste0('How do ', input$hoodSelect, ' Residents Commute to Work?'))
     
   })
   
   
-  # Data Table Output containing information from the input fields
+  # Data Table Output containing information from the input fields from leaflet map
   output$table <- DT::renderDataTable({
-    dft <- transpodf()
-    subset(dft, select = c(Neighborhood, Total.Street.Miles))
+    dfw <- watersdf()
+    subset(dfw, select = c(neighborhood, name, feature_type, make))
   })
   
   # Download data in the datatable
