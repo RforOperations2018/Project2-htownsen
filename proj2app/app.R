@@ -99,7 +99,7 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                                    "Select Water Feature Types:",
                                    choices = watertypes,
                                    selected = c("Drinking Fountain", "Decorative", "Spray")),
-                    checkboxInput("bestSelect", tags$b("Check this box to highlight the most dependable water features"), value = FALSE, width = '100%'),
+                    checkboxInput("bestSelect", tags$b("Check this box to only see the most dependable water features"), value = FALSE, width = '100%'),
                     style = "opacity: 0.92"
                     )
                  ),
@@ -199,11 +199,25 @@ server <- function(input, output) {
         addAwesomeMarkers(data = waters, lng = ~longitude, lat = ~latitude, icon = icon.water,
                           popup = ~paste0("<b>", name, "</b><br>", feature_type))
       
-    } else if (nrow(waters)==0 & input$bestSelect==F) {
+      # if there are no markers (water features) for a neighborhood
+      # then it won't matter whether input$bestSelect is T or F
+    } else if (nrow(waters)==0) {
       leaflet(width="100%", height="100%") %>%
         addTiles() %>%
         addPolygons(data = hoodpolys, popup = ~paste0("<b>", hood, "</b><br>", acres, " acres"))
+      
+    } 
+    else if (nrow(waters)>0 & input$bestSelect==T) {
+      watersbest <- filter(waters, make=='Most Dependable')
+
+      leaflet(width="100%", height="100%") %>%
+        addTiles() %>%
+        addPolygons(data = hoodpolys, popup = ~paste0("<b>", hood, "</b><br>", acres, " acres")) %>%
+        addAwesomeMarkers(data = watersbest, lng = ~longitude, lat = ~latitude, icon = icon.water,
+                          popup = ~paste0("<b>", name, "</b><br>", feature_type, "<br>", make))
     }
+    
+    
   })
   
   output$plot1 <- renderPlotly({
