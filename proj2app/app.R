@@ -245,12 +245,15 @@ server <- function(input, output) {
   # PLOT 2
   output$plot2 <- renderPlotly({
     dat <- transpodfall()
+    hood <- dat['Neighborhood'==input$hoodSelect,]
+    miles <- as.numeric(dat$Total.Street.Miles)
+    milesh <- as.numeric(hood$Total.Street.Miles)
+    
     ggplotly(
       ggplot(data = dat, aes(x = as.numeric(Total.Street.Miles))) +
         geom_histogram(binwidth=5, fill = "orange", color = 'white') + ggtitle(paste0("Road/Street Miles in ", input$hoodSelect)) +
-      xlab("Distribution of Total Street Miles"))
-        #gghighlight(as.numeric(Total.Street.Miles)==(as.numeric((input$hoodSelect)$Total.Street.Miles))))
-        #
+      xlab("Distribution of Total Street Miles") +
+        gghighlight(miles == milesh))
   })
   
   
