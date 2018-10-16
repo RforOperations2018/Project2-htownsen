@@ -58,7 +58,6 @@ ckanSQL <- function(url) {
 }
 
 # This data is from the WPRDC.
-# BikePGH -> Autonomous Vehicle Survey of Bicyclists and Pedestrians in Pittsburgh, 2017
 
 # Unique values for Resource Field
 ckanUniques <- function(id, field) {
@@ -72,25 +71,34 @@ ckanUniques <- function(id, field) {
 url1 <- URLencode("https://services1.arcgis.com/YZCmUqbcsUpOKfj7/arcgis/rest/services/PGHWebNeighborhoods/FeatureServer/0/query?where=HOOD+IS+NOT+NULL&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=HOOD&returnGeometry=false&returnCentroid=false&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnDistinctValues=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=json")
 hoods <- sort(getEsriList(url1))
 
+# Grab the unique water feature types from url2
+watertypes <- sort(ckanUniques("513290a6-2bac-4e41-8029-354cbda6a7b7", "feature_type")$feature_type)
+
 
 # Define UI for application that creates a map
 ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
-                 tabPanel("Interactive PGH Map",
+                 tabPanel("Interactive Map",
                           leafletOutput("map", height='700px'),
                           
                           # Shiny versions prior to 0.11 should use class = "modal" instead.
                           absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
                                         draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
                                         width = 330, height = "auto",
-
+                    # Input 1: Select Neighborhood
                     selectInput("hoodSelect",
                                 "Select a Neighborhood:",
                                 choices = hoods,
                                 selected = "Shadyside"),
+                          
+                    # Input 2: Select water feature type
+                    checkboxGroupInput("waterSelect",
+                                   "Select Water Feature Types:",
+                                   choices = watertypes,
+                                   selected = c("Drinking Fountain", "Decorative", "Spray")),
                     style = "opacity: 0.92"
-                          )
+                    )
                  ),
-                 tabPanel("Table",
+                 tabPanel("Downloadable Table",
                           inputPanel(
                             downloadButton("downloadData", "Download Data Here")
                             ),
