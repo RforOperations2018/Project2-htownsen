@@ -13,6 +13,8 @@
 
 # Loading in the necessary libraries
 library(shiny)
+library(plotly)
+library(htmltools)
 library(httr)
 library(jsonlite)
 library(plyr)
@@ -100,8 +102,8 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                  ),
                  tabPanel("Plots",
                           fluidRow(
-                            column(6, plotlyOutput("plot1")),
-                            column(6, offset = 6, plotlyOuput("plot2"))
+                            column(6, plotlyOutput("plot1"))
+                            #column(6, offset = 6, plotlyOuput("plot2"))
                           )
                           ),
                  tabPanel("Downloadable Table",
@@ -171,6 +173,24 @@ server <- function(input, output) {
         addPolygons(data = hoodpolys, popup = ~paste0("<b>", hood, "</b><br>", acres, " acres"))
     }
   })
+  
+  output$plot1 <- renderPlotly({
+    
+    dat <- transpodf()
+    # data for plotly pie chart
+    # df <- dat %>%
+    #   group_by(FeelingsProvingGround) %>%
+    #   summarise(COUNT = n())
+    
+    commutes = c(`Commute to Work: Drive Alone (2010)`,	`Commute to Work: Carpool/Vanpool (2010)`, `Commute to Work: Public Transportation (2010)`,
+                 `Commute to Work: Taxi (2010)`,`Commute to Work: Motorcycle (2010)`,	`Commute to Work: Bicycle (2010)`,	
+                 `Commute to Work: Walk (2010)`,`Commute to Work: Other (2010)`,`Work at Home (2010)`)
+    
+    
+    plot_ly(dat, labels = ~commutes, values = ~commutes, type = 'pie')
+    
+  })
+  
   
   # Data Table Output containing information from the input fields
   output$table <- DT::renderDataTable({
