@@ -128,7 +128,8 @@ server <- function(input, output) {
     url1 <- URLencode(paste0("https://services1.arcgis.com/YZCmUqbcsUpOKfj7/arcgis/rest/services/PGHWebNeighborhoods/FeatureServer/0/query?where=HOOD+%3D+%27", gsub(' ', '+', input$hoodSelect),
                             "%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=true&returnCentroid=false&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnDistinctValues=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=json"))
     # Get Data
-    hoodpolys <- getEsri(url1) %>% spTransform("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+    #getEsri(url1) %>% 
+    hoodpolys <- getEsri(url1) %>% spTransform(CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"))
 
     return(hoodpolys)
   })

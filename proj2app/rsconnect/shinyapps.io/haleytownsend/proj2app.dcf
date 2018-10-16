@@ -5,8 +5,8 @@ account: haleytownsend
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 517231
-bundleId: 1646055
+bundleId: 1646695
 url: https://haleytownsend.shinyapps.io/proj2app/
-when: 1539708536.4754
+when: 1539733040.93093
 asMultiple: FALSE
 asStatic: FALSE
