@@ -183,12 +183,22 @@ server <- function(input, output) {
     #   group_by(FeelingsProvingGround) %>%
     #   summarise(COUNT = n())
     
-    commutes = as.vector(dat["Commute.to.Work..Drive.Alone..2010.",	"Commute.to.Work..Public.Transportation..2010.", "Commute.to.Work..Motorcycle..2010.",
-                             "Commute.to.Work..Walk..2010.","Work.at.Home..2010.",	"Commute.to.Work..Carpool.Vanpool..2010.",	
-                             "Commute.to.Work..Taxi..2010.","Commute.to.Work..Bicycle..2010.","Commute.to.Work..Other..2010."])
+    dat$Commute.to.Work..Drive.Alone..2010. <-  as.numeric(as.character(gsub('%', '', dat$Commute.to.Work..Drive.Alone..2010.)))
+    dat$Commute.to.Work..Public.Transportation..2010. <-  as.numeric(as.character(gsub('%', '', dat$Commute.to.Work..Public.Transportation..2010.)))
+    dat$Commute.to.Work..Motorcycle..2010. <-  as.numeric(as.character(gsub('%', '', dat$Commute.to.Work..Motorcycle..2010)))
+    dat$Commute.to.Work..Walk..2010. <-  as.numeric(as.character(gsub('%', '', dat$Commute.to.Work..Walk..2010)))
+    dat$Commute.to.Work..Carpool.Vanpool..2010. <-  as.numeric(as.character(gsub('%', '', dat$Commute.to.Work..Carpool.Vanpool..2010)))
+    dat$Commute.to.Work..Taxi..2010. <-  as.numeric(as.character(gsub('%', '', dat$Commute.to.Work..Taxi..2010.)))
+    dat$Commute.to.Work..Bicycle..2010. <-  as.numeric(as.character(gsub('%', '', dat$Commute.to.Work..Bicycle..2010.)))
+    dat$Commute.to.Work..Other..2010. <-  as.numeric(as.character(gsub('%', '', dat$Commute.to.Work..Other..2010.)))
+    dat$Work.at.Home..2010. <-  as.numeric(as.character(gsub('%', '', dat$Work.at.Home..2010.)))
+    
+    dat2 = dat[,c("Commute.to.Work..Drive.Alone..2010.",	"Commute.to.Work..Public.Transportation..2010.", "Commute.to.Work..Motorcycle..2010.",
+                        "Commute.to.Work..Walk..2010.","Work.at.Home..2010.",	"Commute.to.Work..Carpool.Vanpool..2010.",
+                        "Commute.to.Work..Taxi..2010.","Commute.to.Work..Bicycle..2010.","Commute.to.Work..Other..2010.")]
     
     
-    plot_ly(dat, labels = ~commutes, values = ~commutes, type = 'pie')
+    plot_ly(dat2, labels = colnames(dat2), values = as.numeric(dat2[1,]) , type = 'pie')
     
   })
   
