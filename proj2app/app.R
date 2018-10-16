@@ -99,12 +99,14 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                                    "Select Water Feature Types:",
                                    choices = watertypes,
                                    selected = c("Drinking Fountain", "Decorative", "Spray")),
+                    # Input 3: Only include the most dependable water features
                     checkboxInput("bestSelect", tags$b("Check this box to only see the most dependable water features"), value = FALSE, width = '100%'),
                     style = "opacity: 0.92"
                     )
                  ),
                  tabPanel("Downloadable Table",
-                          checkboxInput("allSelect", tags$b("Check this box to see ALL Pittsburgh neighborhoods"), value = FALSE, width = '100%'),
+                          # Input 4: Option to get data for all the PGH neighborhoods
+                          checkboxInput("allSelect", tags$b("Check this box to see water feature data for ALL Pittsburgh neighborhoods"), value = FALSE, width = '100%'),
                           inputPanel(
                             downloadButton("downloadData", "Download Data Here")
                           ),
@@ -216,7 +218,6 @@ server <- function(input, output) {
         addAwesomeMarkers(data = watersbest, lng = ~longitude, lat = ~latitude, icon = icon.water,
                           popup = ~paste0("<b>", name, "</b><br>", feature_type, "<br>", make))
     }
-    
     
   })
   
