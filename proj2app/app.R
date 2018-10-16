@@ -179,10 +179,7 @@ server <- function(input, output) {
     
     dat <- transpodf()
     # data for plotly pie chart
-    # df <- dat %>%
-    #   group_by(FeelingsProvingGround) %>%
-    #   summarise(COUNT = n())
-    
+
     dat$Commute.to.Work..Drive.Alone..2010. <-  as.numeric(as.character(gsub('%', '', dat$Commute.to.Work..Drive.Alone..2010.)))
     dat$Commute.to.Work..Public.Transportation..2010. <-  as.numeric(as.character(gsub('%', '', dat$Commute.to.Work..Public.Transportation..2010.)))
     dat$Commute.to.Work..Motorcycle..2010. <-  as.numeric(as.character(gsub('%', '', dat$Commute.to.Work..Motorcycle..2010)))
@@ -198,7 +195,8 @@ server <- function(input, output) {
                         "Commute.to.Work..Taxi..2010.","Commute.to.Work..Bicycle..2010.","Commute.to.Work..Other..2010.")]
     
     
-    plot_ly(dat2, labels = colnames(dat2), values = as.numeric(dat2[1,]) , type = 'pie')
+    plot_ly(dat2, labels = colnames(dat2), values = as.numeric(dat2[1,]) , type = 'pie', showlegend = FALSE) %>%
+      layout(title = paste0('How do ', input$hoodSelect, ' Residents Commute to Work?'))
     
   })
   
