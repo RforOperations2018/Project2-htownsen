@@ -242,7 +242,8 @@ server <- function(input, output) {
     
   })
   
-  # PLOT 2
+  # PLOT 2: Histogram of Total Street Miles, highlighting the portion of the histogram
+  # corresponding to the selected neighborhood
   output$plot2 <- renderPlotly({
     dat <- transpodfall()
     hood <- dat['Neighborhood'==input$hoodSelect,]
@@ -250,12 +251,12 @@ server <- function(input, output) {
     milesh <- as.numeric(hood$Total.Street.Miles)
     
     ggplotly(
-      ggplot(data = dat, aes(x = as.numeric(Total.Street.Miles), text = paste("Neighborhoods:", Neighborhood),
-                             hoverinfo = x)) +
+      ggplot(data = dat, aes(x = as.numeric(Total.Street.Miles), 
+                             text = paste0("<b>", Neighborhood, ": </b>", as.numeric(Total.Street.Miles), " miles"))) +
         geom_histogram(binwidth=5, fill = "orange", color = 'white') + ggtitle(paste0("Road/Street Miles in Pittsburgh Neighborhoods")) +
       xlab("Distribution of Total Street Miles") + 
         ylab("Number of Neighborhoods (out of 90)") +
-        gghighlight(Neighborhood == input$hoodSelect) 
+        gghighlight(Neighborhood == input$hoodSelect), tooltip = 'text' 
       )
   })
   
