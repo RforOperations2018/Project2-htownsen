@@ -165,10 +165,18 @@ server <- function(input, output) {
   
   transpodf <- reactive({
     # Build API Query with proper encodes
-    # Also filter by the three inputs 
-    # Using gsub to deal with spaces for certain factor levels like "Not familiar at all"
+    # Also filter by neighborhood selected
     url3 <- paste0("https://data.wprdc.org/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%225d61b60b-bd25-4c33-8420-e31a9135ec6e%22%20WHERE%20%22Neighborhood%22%20%3D%27",
                    gsub(' ', '%20', input$hoodSelect), "%27"
+    )
+    transpo <- ckanSQL(url3)
+    return(transpo)
+  })
+  
+  transpodfall <- reactive({
+    # Build API Query with proper encodes
+    # Don't filter by neighborhood now
+    url3 <- paste0("https://data.wprdc.org/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%225d61b60b-bd25-4c33-8420-e31a9135ec6e%22"
     )
     transpo <- ckanSQL(url3)
     return(transpo)
@@ -235,10 +243,10 @@ server <- function(input, output) {
   
   # PLOT 2
   output$plot2 <- renderPlotly({
-    dat <- transpodf()
+    dat <- transpodfall()
     ggplotly(
-      ggplot(data = dat, aes(x = Total.Street.Miles)) +
-        geom_bar() + ggtitle(paste0("Road/Street Miles in ", input$hoodSelect)))
+      ggplot(data = dat, aes(x = as.numeric(Total.Street.Miles))) +
+        geom_histogram(binwidth=5) + ggtitle(paste0("Road/Street Miles in ", input$hoodSelect)))
         # guides(color = FALSE) + xlab("Familiarity") + ylab("Number of Respondents") + coord_flip())
   })
   
