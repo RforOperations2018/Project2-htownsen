@@ -102,7 +102,7 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                     )
                  ),
                  tabPanel("Downloadable Table",
-                          checkboxInput("allSelect", "Would you like to see ALL Pittsburgh neighborhoods?", value = FALSE),
+                          checkboxInput("allSelect", tags$b("Check this box to see ALL Pittsburgh neighborhoods"), value = FALSE, width = '100%'),
                           inputPanel(
                             downloadButton("downloadData", "Download Data Here")
                           ),
@@ -254,7 +254,15 @@ server <- function(input, output) {
       paste("PGH-Neighborhood-", input$hoodSelect, "-", Sys.Date(), ".csv", sep="")
     },
     content = function(file) {
-      write.csv(transpodf(), file)
+      if (input$allSelect==F) {
+        dfw <- watersdf()
+        csvdata<- subset(dfw, select = c(neighborhood, name, feature_type, make))
+        
+      } else {
+        dfall <- watersdfall()
+        csvdata <- subset(dfall, select = c(neighborhood, name, feature_type, make))
+      }
+      write.csv(csvdata, file)
     }
   )
 }
