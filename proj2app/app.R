@@ -99,7 +99,7 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                                    "Select Water Feature Types:",
                                    choices = watertypes,
                                    selected = c("Drinking Fountain", "Decorative", "Spray")),
-                    checkboxInput("bestSelect", tags$b("Check this box if you only want to see the Most Dependable water Features"), value = FALSE, width = '100%'),
+                    checkboxInput("bestSelect", tags$b("Check this box to highlight the most dependable water features"), value = FALSE, width = '100%'),
                     style = "opacity: 0.92"
                     )
                  ),
@@ -192,13 +192,14 @@ server <- function(input, output) {
                                   iconColor = "black", library = "glyphicon")
     
     # Call Data and Build Map
-    if (nrow(waters)>0){
+    if (nrow(waters)>0 & input$bestSelect==F){
       leaflet(width="100%", height="100%") %>%
         addTiles() %>%
         addPolygons(data = hoodpolys, popup = ~paste0("<b>", hood, "</b><br>", acres, " acres")) %>%
         addAwesomeMarkers(data = waters, lng = ~longitude, lat = ~latitude, icon = icon.water,
-                          popup = ~paste0("<b>", name, "</b><br>", feature_type, "<br>", make))
-    } else {
+                          popup = ~paste0("<b>", name, "</b><br>", feature_type))
+      
+    } else if (nrow(waters)==0 & input$bestSelect==F) {
       leaflet(width="100%", height="100%") %>%
         addTiles() %>%
         addPolygons(data = hoodpolys, popup = ~paste0("<b>", hood, "</b><br>", acres, " acres"))
