@@ -107,6 +107,7 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                             downloadButton("downloadData", "Download Data Here")
                           ),
                           fluidPage(DT::dataTableOutput("table"))),
+                 
                  tabPanel("Transportation Plots",
                           fluidRow(
                             column(6, plotlyOutput("plot1"))
@@ -115,7 +116,6 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                           )
                  
 )
-
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
