@@ -100,7 +100,7 @@ ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                                    choices = watertypes,
                                    selected = c("Drinking Fountain", "Decorative", "Spray")),
                     # Input 3: Only include the most dependable water features
-                    checkboxInput("bestSelect", tags$b("Check this box to only see the most dependable water features"), value = FALSE, width = '100%'),
+                    checkboxInput("bestSelect", tags$b("Check this box to see only the most dependable water features"), value = FALSE, width = '100%'),
                     style = "opacity: 0.92"
                     )
                  ),
@@ -126,7 +126,7 @@ server <- function(input, output) {
   pghLoad <- reactive({
     # Build URL Query
     url1 <- URLencode(paste0("https://services1.arcgis.com/YZCmUqbcsUpOKfj7/arcgis/rest/services/PGHWebNeighborhoods/FeatureServer/0/query?where=HOOD+%3D+%27", gsub(' ', '+', input$hoodSelect),
-                            "%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=true&returnCentroid=false&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnDistinctValues=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=json"))
+                            "%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=true&returnCentroid=false&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnDistinctValues=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=geojson"))
     # Get Data
     #getEsri(url1) %>% 
     hoodpolys <- getEsri(url1) %>% spTransform(CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"))
