@@ -82,6 +82,7 @@ watertypes <- sort(ckanUniques("513290a6-2bac-4e41-8029-354cbda6a7b7", "feature_
 # Define UI for application that creates a map
 ui <- navbarPage("Pittsburgh Neighborhoods", theme = shinytheme("flatly"),
                  tabPanel("Interactive Map",
+                          # Only thing that's not great about setting a specific height for you leaflet map is you might make it too big for certain screen sizes. Using custom css is really the only way to fix this when you're not putting it in a typical shiny app.
                           leafletOutput("map", height='700px'),
                           
                           # Shiny versions prior to 0.11 should use class = "modal" instead.
